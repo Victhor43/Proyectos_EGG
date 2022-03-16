@@ -1,0 +1,77 @@
+#titulo {
+    color: rgb(65, 121, 143);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+p strong {
+    color: red;
+}
+
+.destacado {
+    color: gold;
+}
+
+h2 {
+    color: blue;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+a:link {
+    color: red;
+}
+
+a em {
+    color: blue;
+}
+
+.a2:link {
+    color: green;
+}
+
+#adicional {
+    color: rgb(156, 133, 74);
+}
+
+#especial {
+    color: rgb(220, 38, 236);
+}
+
+span.especial {
+    color: rgb(183, 0, 255);
+}
+
+.especial {
+    color: goldenrod;
+}
+
+table {
+    border-collapse: collapse;
+    border: black solid;
+}
+
+th {
+    border-collapse: collapse;
+    border: black solid;
+}
+
+td {
+    border-collapse: collapse;
+    border: black solid;
+}
+
+tr {
+    border-collapse: collapse;
+    border: black solid;
+}
+
+tfoot tr th {
+    color: red;
+}
+
+tbody {
+    color: greenyellow;
+}
+
+tbody th {
+    color: red;
+}

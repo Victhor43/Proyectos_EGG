@@ -1,0 +1,37 @@
+table {
+    border: 1px #333 solid;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table img {
+    float: left;
+}
+
+table tr {
+    border: 1px black solid;
+}
+
+table th {
+    border: 1px black solid;
+    padding: 5px;
+}
+
+table td {
+    border: 1px black solid;
+}
+
+table thead {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: gainsboro;
+}
+
+table tbody th {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #E6F3FF;
+    text-align: left;
+}
+
+table tr:nth-child(odd) td {
+    background-color: #FFFFCC;
+}

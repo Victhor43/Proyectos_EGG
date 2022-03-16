@@ -1,0 +1,22 @@
+body{
+    background-color: black;
+}
+
+h1{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    text-align: center;
+    color: aliceblue;
+}
+
+h2{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    color: beige;
+}
+
+p{
+    font-family: 'Courier New', Courier, monospace;
+    color: blue;
+    text-align: left;
+}
+

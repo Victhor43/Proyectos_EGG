@@ -1,0 +1,14 @@
+label {
+    font-weight: bold;
+}
+
+button {
+    color: black;
+    background-color: white;
+}
+
+.boton1 {
+    color: black;
+    background-color: white;
+    border-color: gray;
+}
