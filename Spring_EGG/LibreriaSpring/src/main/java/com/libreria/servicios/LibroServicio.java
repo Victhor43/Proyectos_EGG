@@ -22,9 +22,9 @@ public class LibroServicio {
     private EditorialServicio editorialServicio;
 
     @Transactional(rollbackFor = Exception.class) // si algo falla, no modifica la DB
-    public Libro crear(String id, Long isbn, String titulo, Integer anio, Integer ejemplares, String idAutor, String idEditorial) throws Exception {
+    public Libro crear(Long isbn, String titulo, Integer anio, Integer ejemplares, String idAutor, String idEditorial) throws Exception {
 
-        validar(isbn, titulo, anio, ejemplares, idAutor, idAutor);
+        validar(isbn, titulo, anio, ejemplares, idAutor, idEditorial);
         Libro libro = new Libro(); // nuevo libro vacio
 
         // id automatico
@@ -123,7 +123,7 @@ public class LibroServicio {
 
     public void validar(Long isbn, String titulo, Integer anio, Integer ejemplares, String idAutor, String idEditorial) throws Exception {
 
-        if (isbn < 0) {
+        if (isbn == null) {
             throw new Exception("Debe ingresar un ISBN");
         }
 
@@ -131,7 +131,7 @@ public class LibroServicio {
             throw new Exception("Debe ingresar un titulo");
         }
 
-        if (anio < 0) {
+        if (anio == null) {
             throw new Exception("Debe ingresar un año");
         }
 
@@ -160,4 +160,6 @@ public class LibroServicio {
         
 
     }
+
+ 
 }

@@ -17,8 +17,8 @@ public class AutorServicio {
     @Transactional(rollbackFor = Exception.class) // si algo falla, no modifica la DB
     public Autor crear(String nombre) throws Exception {
 
-        Autor a = new Autor();
         validar(nombre);
+        Autor a = new Autor();
 
         a.setAlta(Boolean.TRUE);
         a.setNombre(nombre);
@@ -48,30 +48,30 @@ public class AutorServicio {
     @Transactional(rollbackFor = Exception.class) // si algo falla, no modifica la DB
     public void baja(String nombre) throws Exception {
 
-        Autor a = (Autor) buscarPorNombreUnico(nombre);
+        List<Autor> a = buscarPorNombreLista(nombre);
         if (a == null) {
             throw new Exception("La editorial NO existe");
 
         }
-
-        if (!a.getAlta()) {
-            throw new Exception("La editorial ya esta dada de baja");
-        } else {
-            a.setAlta(Boolean.FALSE);
-        }
+//BUSCAR POR ID 
+//        if (!a.getAlta()) {
+//            throw new Exception("La editorial ya esta dada de baja");
+//        } else {
+//            a.setAlta(Boolean.FALSE);
+//        }
 
     }
 
     public void validar(String nombre) throws Exception {
 
         if (nombre == null || nombre.isEmpty()) {
-            throw new Exception("Debe el nombre de la editorial");
+            throw new Exception("Debe ingresar nombre de autor");
         }
 
-        Autor a = (Autor) buscarPorNombreUnico(nombre);
-
-        if (a != null) {
-            throw new Exception("La editorial ya existe");
+        List<Autor> autores = buscarPorNombreLista(nombre);
+        System.out.println("autores = " + autores);
+        if (!autores.isEmpty()) {
+            throw new Exception("El autor ya existe");
 
         }
     }
@@ -79,11 +79,6 @@ public class AutorServicio {
     @Transactional(readOnly = true)
     public List<Autor> buscarPorNombreLista(String nombre) {
         return autorRepositorio.buscarPorNombreLista(nombre); //return editorialRepositorio.buscarPorNombreLista("%" + nombre + "%");
-    }
-
-    @Transactional(readOnly = true)
-    public List buscarPorNombreUnico(String nombre) {
-        return (List) autorRepositorio.buscarPorNombreUnico(nombre);
     }
 
     @Transactional(readOnly = true)

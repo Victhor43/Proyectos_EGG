@@ -17,8 +17,8 @@ public class EditorialServicio {
     @Transactional(rollbackFor = Exception.class) // si algo falla, no modifica la DB
     public Editorial crear(String nombre) throws Exception {
 
-        Editorial e = new Editorial();
         validar(nombre);
+        Editorial e = new Editorial();
 
         e.setAlta(Boolean.TRUE);
         e.setNombre(nombre);
@@ -39,39 +39,38 @@ public class EditorialServicio {
         Editorial e = buscarPorId(idEditorial);
         if (e == null) {
             throw new Exception("No existe la editorial");
-        }else{
+        } else {
             e.setNombre(nombre);
             editorialRepositorio.save(e);
         }
     }
 
     @Transactional(rollbackFor = Exception.class) // si algo falla, no modifica la DB
-   public void baja(String nombre) throws Exception{
-       
-       Editorial e = (Editorial) buscarPorNombreUnico(nombre);
+    public void baja(String nombre) throws Exception {
+
+        List<Editorial> e = buscarPorNombreLista(nombre);
         if (e == null) {
             throw new Exception("La editorial NO existe");
 
         }
-       
-        if(!e.getAlta()){
-            throw new Exception ("La editorial ya esta dada de baja");
-        }else{
-            e.setAlta(Boolean.FALSE);
-        }
-        
-   }
-           
-    
+
+        //HACER POR ID
+//        if(!e.getAlta()){
+//            throw new Exception ("La editorial ya esta dada de baja");
+//        }else{
+//            e.setAlta(Boolean.FALSE);
+//        }
+    }
+
     public void validar(String nombre) throws Exception {
 
         if (nombre == null || nombre.isEmpty()) {
             throw new Exception("Debe el nombre de la editorial");
         }
 
-        Editorial e = (Editorial) buscarPorNombreUnico(nombre);
+        List<Editorial> e = buscarPorNombreLista(nombre);
 
-        if (e != null) {
+        if (!e.isEmpty()) {
             throw new Exception("La editorial ya existe");
 
         }
@@ -80,11 +79,6 @@ public class EditorialServicio {
     @Transactional(readOnly = true)
     public List<Editorial> buscarPorNombreLista(String nombre) {
         return editorialRepositorio.buscarPorNombreLista(nombre); //return editorialRepositorio.buscarPorNombreLista("%" + nombre + "%");
-    }
-
-    @Transactional(readOnly = true)
-    public List buscarPorNombreUnico(String nombre) {
-        return (List) editorialRepositorio.buscarPorNombreUnico(nombre);
     }
 
     @Transactional(readOnly = true)
@@ -99,5 +93,7 @@ public class EditorialServicio {
             return null;
         }
     }
+
+   
 
 }
