@@ -29,7 +29,7 @@ public class PortalControlador {
         List<Editorial> editoriales = editorialServicio.mostrarTodos();
         modelo.put("editoriales", editoriales);
 
-        List<Autor> autores = autorServicio.mostrarTodos();
+        List<Autor> autores = autorServicio.autoresAlta();
         modelo.put("autores", autores);
 
         List<Libro> libros = libroServicio.mostrarTodos();

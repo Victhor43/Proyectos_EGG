@@ -30,6 +30,7 @@
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <div class="dropdown">
+                            
                             <div class="btn-group m-1">
 
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" >
@@ -38,6 +39,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="#"  data-toggle="modal" data-target="#crearLibro">Crear</a></li>
                                     <li><a class="dropdown-item" href="/libros">Buscar</a></li>
+                                    <li><a class="dropdown-item" href="/libros?baja=true">Dados de baja</a></li> <!--USO EL ? PARA ENVIAR PARAMETROS-->
                                 </ul>
                             </div>
                         </div>
@@ -71,7 +73,7 @@
         </div>
     </nav>
 
-    <p th:if="${error !=null}" th:text="${error}" class="errorCarga"></p> <!--ERROR de carga -->
+    <p th:if="${error!=null}" th:text="${error}" ></p> <!--ERROR de carga -->
 
     <!-- Modal CREAR LIBRO -->
     <div class="modal fade" id="crearLibro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -81,6 +83,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Crear Libro</h5>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
+                
                 <form action="/crearLibro" method="POST">
 
                     <div class="modal-body">

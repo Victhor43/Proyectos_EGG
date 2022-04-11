@@ -19,6 +19,7 @@
         <header>
             <h2>LIBRERIA EGG</h2>
             <h3 class="text-center"> LIBROS</h3>
+
         </header>
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -30,8 +31,17 @@
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
+                        <li>
+                            <form th:action="@{/libros}" method="GET" class="d-flex" >
+                                <input class="form-control" type="search" placeholder="titulo" aria-label="Search" name="search" >
+                                <input th:if="${baja != null}" name="baja" value="true" >
+                                <button class="btn btn-outline-success" type="submit" >Buscar</button>
+                            </form>
+                        </li>
 
-
+                        <li th:if="${search!=null}">
+                            <a class="btn btn-outline-success" href="/libros?baja=false">Lista Completa</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -43,13 +53,17 @@
 </nav>
 
 
+<p th:if="${errorActualizado!=null}" th:text="${errorActualizado}" ></p> <!--ERROR de carga -->
+<p th:if="${actualizado!=null}" th:text="${actualizado}"></p> <!--EXITO de carga -->
 
+<p th:text="${error}" ></p> <!--ERROR de carga -->
 <!--TABLA DE LIBROS-->
 <table class="table table-dark table-striped" id="tablaLibro" >
     <thead>
         <tr>
             <th scope="col">Titulo</th>
             <th scope="col">ISBN</th>
+            <th scope="col">ALTA</th>
             <th scope="col">Autor</th>
             <th scope="col">Editorial</th>
             <th scope="col"> </th>
@@ -57,67 +71,151 @@
         </tr>
     </thead>
     <tbody>
-        <tr th:each="libro : ${libros}">
+        <tr th:each="libro, i : ${libros}">
             <td th:text = "${libro.titulo}" ></td>
             <td th:text = "${libro.isbn}" ></td>
+            <td th:text = "${libro.alta}" ></td>
             <td th:text = "${libro.autor.nombre}" ></td>
             <td th:text = "${libro.editorial.nombre}" ></td>
-            <td > <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editarLibro">Editar</button></td>
-            <td > <button type="button" class="btn btn-danger">Dar Baja</button></td>
-        </tr>
-    </tbody>
-</table>
+            <td th:if ="${!baja}"> <button type="button" class="btn btn-primary" data-toggle="modal" th:data-target="${'#editarLibro' + i.index}" >Editar</button></td>
+            <td th:if ="${!baja}"> <button type="button" class="btn btn-danger" data-toggle="modal" th:data-target="${'#bajaLibro' + i.index}" >Dar Baja</button></td>
+            <td th:if ="${baja}"> <button type="button" class="btn btn-success" data-toggle="modal" th:data-target="${'#altaLibro' + i.index}" >Dar Alta</button></td>
+            <!-- Modal EDITAR LIBRO -->
+    <div class="modal fade" th:id="${'editarLibro' + i.index}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Libro</h5>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <form th:action="@{/editarLibro}" method="POST">
 
-<!-- Modal EDITAR LIBRO -->
-<div class="modal fade" id="editarLibro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Editar Libro</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput" class="form-label" >ID</label>
+                            <input class="form-control" id="formGroupExampleInput" placeholder="ID" name="id" th:value="${libro.id}"  readonly="">
+
+                            <label for="formGroupExampleInput" class="form-label" >ISBN</label>
+                            <input class="form-control" id="formGroupExampleInput" placeholder="isbn" name="isbn" th:value="${libro.isbn}">
+                            <!--<input class="form-control" id="formGroupExampleInput" placeholder="isbn" name="isbn">-->
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput2" class="form-label">Titulo</label>
+                            <input  class="form-control" id="formGroupExampleInput2" placeholder="titulo" name="titulo" th:value="${libro.titulo}">
+                            <!--<input  class="form-control" id="formGroupExampleInput2" placeholder="titulo" name="titulo">-->
+                        </div>
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput2" class="form-label" >Año</label>
+                            <input class="form-control" id="formGroupExampleInput2" placeholder="año" name="anio" th:value="${libro.anio}" >
+                            <!--<input class="form-control" id="formGroupExampleInput2" placeholder="año" name="anio" >-->
+                        </div>
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput2" class="form-label" >Ejemplares</label>
+                            <input class="form-control" id="formGroupExampleInput2" placeholder="ejemplares" name="ejemplares" th:value="${libro.ejemplares}">
+                            <!--<input class="form-control" id="formGroupExampleInput2" placeholder="ejemplares" name="ejemplares">-->
+                        </div>
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput2" class="form-label">Autor</label>
+                            <select class="form-control" name="idAutor" >
+                                <option th:each="autor: ${autores}" th:value="${autor.id}" th:text="${autor.nombre}" th:selected="${autor.id == libro.autor.id}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput2" class="form-label">Editorial</label>
+                            <!--<input class="form-control" id="formGroupExampleInput2" placeholder="editorial" >-->
+                            <select class="form-control" name="idEditorial" >
+                                <option th:each="editorial: ${editoriales}" th:value="${editorial.id}" th:text="${editorial.nombre}" th:selected= "${editorial.id == libro.editorial.id}"></option>
+                            </select>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
             </div>
-            <form action="/editarLibro" method="POST">
-
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="formGroupExampleInput" class="form-label" >ISBN</label>
-                        <input class="form-control" id="formGroupExampleInput" placeholder="isbn" name="isbn" th:value="${isbn}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="formGroupExampleInput2" class="form-label">Titulo</label>
-                        <input  class="form-control" id="formGroupExampleInput2" placeholder="titulo" name="titulo" th:value="${titulo}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="formGroupExampleInput2" class="form-label" >Año</label>
-                        <input class="form-control" id="formGroupExampleInput2" placeholder="año" name="anio" th:value="${anio}" >
-                    </div>
-                    <div class="mb-3">
-                        <label for="formGroupExampleInput2" class="form-label" >Ejemplares</label>
-                        <input class="form-control" id="formGroupExampleInput2" placeholder="ejemplares" name="ejemplares" th:value="${ejemplares}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="formGroupExampleInput2" class="form-label">Autor</label>
-                        <select class="form-control" name="idAutor" >
-                            <option th:each="autor: ${autores}" th:value="${autor.id}" th:text="${autor.nombre}"></option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="formGroupExampleInput2" class="form-label">Editorial</label>
-                        <select class="form-control" name="idEditorial" >
-                            <option th:each="editorial: ${editoriales}" th:value="${editorial.id}" th:text="${editorial.nombre}"></option>
-                        </select>
-
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
+
+    <!-- Modal BAJA LIBRO -->
+    <div class="modal fade" th:id="${'bajaLibro' + i.index}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Libro</h5>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <form th:action="@{/bajaLibro}" method="GET">
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput" class="form-label" >ID</label>
+                            <input class="form-control" id="formGroupExampleInput" placeholder="ID" name="id" th:value="${libro.id}"  readonly="">
+
+                            <label for="formGroupExampleInput" class="form-label" >ISBN</label>
+                            <input class="form-control" id="formGroupExampleInput" placeholder="isbn" name="isbn" th:value="${libro.isbn}" readonly="">
+                            <!--<input class="form-control" id="formGroupExampleInput" placeholder="isbn" name="isbn">-->
+                        </div>
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput2" class="form-label">Titulo</label>
+                            <input  class="form-control" id="formGroupExampleInput2" placeholder="titulo" name="titulo" th:value="${libro.titulo}" readonly="">
+                            <!--<input  class="form-control" id="formGroupExampleInput2" placeholder="titulo" name="titulo">-->
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-danger">Dar de baja</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+     <!-- Modal ALTA LIBRO -->
+    <div class="modal fade" th:id="${'altaLibro' + i.index}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Alta Libro</h5>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <form th:action="@{/altaLibro}" method="GET">
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput" class="form-label" >ID</label>
+                            <input class="form-control" id="formGroupExampleInput" placeholder="ID" name="id" th:value="${libro.id}"  readonly="">
+
+                            <label for="formGroupExampleInput" class="form-label" >ISBN</label>
+                            <input class="form-control" id="formGroupExampleInput" placeholder="isbn" name="isbn" th:value="${libro.isbn}" readonly="">
+                            <!--<input class="form-control" id="formGroupExampleInput" placeholder="isbn" name="isbn">-->
+                        </div>
+                        <div class="mb-3">
+                            <label for="formGroupExampleInput2" class="form-label">Titulo</label>
+                            <input  class="form-control" id="formGroupExampleInput2" placeholder="titulo" name="titulo" th:value="${libro.titulo}" readonly="">
+                            <!--<input  class="form-control" id="formGroupExampleInput2" placeholder="titulo" name="titulo">-->
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Dar de alta</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</tr>
+</tbody>
+</table>
+
+
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-
 DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

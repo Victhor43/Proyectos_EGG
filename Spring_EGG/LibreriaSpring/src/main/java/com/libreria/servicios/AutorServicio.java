@@ -33,6 +33,13 @@ public class AutorServicio {
 
     }
 
+     @Transactional(readOnly = true)
+    public List<Autor> autoresAlta() {
+
+        return autorRepositorio.autoresAlta();
+
+    }
+
     @Transactional(rollbackFor = Exception.class) // si algo falla, no modifica la DB
     public void actualizar(String idEditorial, String nombre) throws Exception {
 
